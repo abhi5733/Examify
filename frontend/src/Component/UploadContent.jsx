@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { getDocument , GlobalWorkerOptions } from 'pdfjs-dist';
-//  import pdfWorker from 'pdfjs-dist/build/pdf.worker.mjs';
+import { getDocument, GlobalWorkerOptions } from 'pdfjs-dist';
+import axios from 'axios';
+import { Box, Button, Heading, Input, Text } from '@chakra-ui/react';
 
 // Configure the worker
 GlobalWorkerOptions.workerSrc = `/node_modules/pdfjs-dist/build/pdf.worker.mjs`;
-// GlobalWorkerOptions.workerSrc = pdfWorker
 
 function UploadContent() {
   const [file, setFile] = useState(null);
@@ -13,12 +13,12 @@ function UploadContent() {
   const [error, setError] = useState('');
   const [mcqs, setMcqs] = useState([]);
 
+  const apiKey = import.meta.env.VITE_API_KEY; // Fetch the API Key from .env
+
   // Extract text from PDF using pdfjs-dist
   const extractTextFromPDF = async (pdfData) => {
-
     try {
       const pdfDoc = await getDocument({ data: pdfData }).promise;
-    
       let text = '';
       for (let i = 1; i <= pdfDoc.numPages; i++) {
         const page = await pdfDoc.getPage(i);
@@ -28,7 +28,7 @@ function UploadContent() {
       }
       setPreviewText(text.slice(0, 1000)); // Preview first 1000 characters
       setFile(text); // Store the extracted text
-      console.log("text",text)
+      console.log("text", text);
     } catch (err) {
       setError('Failed to extract text from the PDF.');
       console.error('PDF parsing error:', err);
@@ -51,33 +51,63 @@ function UploadContent() {
     }
   };
 
-  // Handle submission
+  // Handle submit for MCQ generation
+
   const handleSubmit = async () => {
     if (!file) {
       setError('Please upload a PDF file first.');
       return;
     }
-
+  
     setIsLoading(true);
     setError('');
-
+  
     try {
-      // Simulate API call for generating MCQs
-      const response = await axios.post('/api/upload-notes', { text: file });
+      const response = await axios.post('http://localhost:7300/generate-mcqs', {
+        text: file, // The extracted text from PDF
+      });
+  
+      if (response.status === 200) {
+        const mcqs = response.data.mcqs;
+        console.log(mcqs,"mcqs")
+        setMcqs(mcqs); // Set the generated MCQs in the state
+      } else {
+        setError('Error generating MCQs.');
+      }
+  
       setIsLoading(false);
-      setMcqs(response.data.mcqs); // Assuming the API returns MCQs
     } catch (err) {
+      console.error('Error:', err);
       setIsLoading(false);
-      setError('An error occurred while processing the notes.');
+      setError('An error occurred while generating MCQs.');
     }
   };
+  
+
+
 
   return (
-    <div className="upload-notes-container">
-      <h2>Upload Your Exam Notes (PDF Only)</h2>
+    <> 
+     {/* Display the generated MCQs */}
+     {mcqs.length > 0?(
+        <div className="mcq-preview">
+          <h3>Generated MCQs:</h3>
+          <ul>
+            {mcqs.map((mcq, index) => (
+              <li key={index}>{mcq.question}</li>
+            ))}
+          </ul>
+        </div>
+      ):
+      // upload file button UI
+    <Box w={"50%"} m={"auto"} mt={"10px"} p={"10px"} bgColor={"gray.200"} className="upload-notes-container">
+      <Heading mt={"10px"}>Upload Your Exam Notes (PDF Only)</Heading>
 
       {/* File upload input */}
-      <input
+      <Input
+      border={"1px solid black"}
+      w={"200px"}
+      mt={"20px"}
         type="file"
         accept="application/pdf"
         onChange={handleFileChange}
@@ -92,25 +122,16 @@ function UploadContent() {
       )}
 
       {/* Submit button */}
-      <button onClick={handleSubmit} disabled={isLoading}>
+      <Button ml={"20px"} bgColor={"pink"} onClick={handleSubmit} disabled={isLoading}>
         {isLoading ? 'Generating MCQs...' : 'Generate MCQs'}
-      </button>
+      </Button >
 
       {/* Display error message */}
-      {error && <div className="error">{error}</div>}
+      {error && <Text className="error">{error}</Text>}
 
-      {/* Display the generated MCQs */}
-      {mcqs.length > 0 && (
-        <div className="mcq-preview">
-          <h3>Generated MCQs:</h3>
-          <ul>
-            {mcqs.map((mcq, index) => (
-              <li key={index}>{mcq}</li>
-            ))}
-          </ul>
-        </div>
-      )}
-    </div>
+     
+    </Box >}
+    </>
   );
 }
 
