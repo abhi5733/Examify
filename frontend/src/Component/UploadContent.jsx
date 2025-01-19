@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { getDocument, GlobalWorkerOptions } from 'pdfjs-dist';
 import axios from 'axios';
 import { Box, Button, Heading, Input, Text } from '@chakra-ui/react';
+import DisplayMcq from './DisplayMcq';
+import bgImg from "../assets/bgImg.webp"
 
 // Configure the worker
 GlobalWorkerOptions.workerSrc = `/node_modules/pdfjs-dist/build/pdf.worker.mjs`;
@@ -12,6 +14,16 @@ function UploadContent() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [mcqs, setMcqs] = useState([]);
+const[show,setShow] = useState(false) // to display mcq component
+
+useEffect(()=>{
+
+if(mcqs.length>0){
+setShow(true)
+console.log("show")
+}
+
+},[mcqs])
 
   const apiKey = import.meta.env.VITE_API_KEY; // Fetch the API Key from .env
 
@@ -71,7 +83,13 @@ function UploadContent() {
       if (response.status === 200) {
         const mcqs = response.data.mcqs;
         console.log(mcqs,"mcqs")
-        setMcqs(mcqs); // Set the generated MCQs in the state
+        if(mcqs.length>0){
+            // Set the generated MCQs in the state
+            setMcqs(mcqs);
+            // setShow(true)
+       
+        }
+      
       } else {
         setError('Error generating MCQs.');
       }
@@ -88,23 +106,17 @@ function UploadContent() {
 
 
   return (
-    <> 
+    <Box h={"90vh"} w={"100vw"} bgImage={bgImg}  bgSize={"cover"}   bgRepeat="no-repeat" bgPosition="center" >
      {/* Display the generated MCQs */}
-     {mcqs.length > 0?(
-        <div className="mcq-preview">
-          <h3>Generated MCQs:</h3>
-          <ul>
-            {mcqs.map((mcq, index) => (
-              <li key={index}>{mcq.question}</li>
-            ))}
-          </ul>
-        </div>
-      ):
-      // upload file button UI
-    <Box w={"50%"} m={"auto"} mt={"10px"} p={"10px"} bgColor={"gray.200"} className="upload-notes-container">
+     {/* <DisplayMcq mcqs={mcqs} setShow={setShow} /> */}
+     <Heading p={"20px"} color={"white"} textAlign={"center"}  > Welcome to Examify , MCQ generator app</Heading> 
+
+     { (mcqs.length > 0 && show)? <DisplayMcq data={mcqs} setShow={setShow} setData={setMcqs} />:
+     
+    <Box textAlign={"center"} borderRadius={"10px"} w={"50%"}  m={"auto"} mt={"10px"} p={"10px"} bgColor={"whiteAlpha.800"} className="upload-notes-container">
       <Heading mt={"10px"}>Upload Your Exam Notes (PDF Only)</Heading>
 
-      {/* File upload input */}
+
       <Input
       border={"1px solid black"}
       w={"200px"}
@@ -114,7 +126,6 @@ function UploadContent() {
         onChange={handleFileChange}
       />
 
-      {/* Preview of the file */}
       {previewText && (
         <div className="file-preview">
           <h4>Preview of the uploaded notes:</h4>
@@ -122,17 +133,18 @@ function UploadContent() {
         </div>
       )}
 
-      {/* Submit button */}
+   
       <Button ml={"20px"} bgColor={"pink"} onClick={handleSubmit} disabled={isLoading}>
         {isLoading ? 'Generating MCQs...' : 'Generate MCQs'}
       </Button >
 
-      {/* Display error message */}
+     
       {error && <Text className="error">{error}</Text>}
 
      
-    </Box >}
-    </>
+    </Box >} 
+
+    </Box>
   );
 }
 
