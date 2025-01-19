@@ -14,7 +14,7 @@ import {
   useToast,
 } from '@chakra-ui/react';
 
-import { Box, Button, Heading, Input, Text } from '@chakra-ui/react';
+
 import DisplayMcq from './DisplayMcq';
 import bgImg from "../assets/bgImg.webp"
 
@@ -169,7 +169,7 @@ console.log("show")
     <Box textAlign={"center"} borderRadius={"10px"} w={"50%"}  m={"auto"} mt={"10px"} p={"10px"} bgColor={"whiteAlpha.800"} className="upload-notes-container">
       <Heading mt={"10px"}>Upload Your Exam Notes (PDF Only)</Heading>
 
- <Input type="file" border={"1px solid black"} w={"200px"} mt={"20px"} type="file" accept=".doc,.docx,.pdf,.txt,.jpg,.png" onChange={handleFileChange} />
+ <Input type="file" border={"1px solid black"} w={"200px"} mt={"20px"}  accept=".doc,.docx,.pdf,.txt,.jpg,.png" onChange={handleFileChange} />
     
 
       {previewText && (
