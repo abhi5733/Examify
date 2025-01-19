@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { getDocument, GlobalWorkerOptions } from 'pdfjs-dist';
 import axios from 'axios';
+
 import Tesseract from 'tesseract.js';
 import {
   Box,
@@ -13,6 +14,11 @@ import {
   useToast,
 } from '@chakra-ui/react';
 
+import { Box, Button, Heading, Input, Text } from '@chakra-ui/react';
+import DisplayMcq from './DisplayMcq';
+import bgImg from "../assets/bgImg.webp"
+
+
 // Configure the worker
 GlobalWorkerOptions.workerSrc = `/node_modules/pdfjs-dist/build/pdf.worker.mjs`;
 
@@ -22,7 +28,20 @@ function UploadContent() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [mcqs, setMcqs] = useState([]);
+
   const toast = useToast();
+
+const[show,setShow] = useState(false) // to display mcq component
+
+useEffect(()=>{
+
+if(mcqs.length>0){
+setShow(true)
+console.log("show")
+}
+
+},[mcqs])
+
 
   const apiKey = import.meta.env.VITE_API_KEY; // Fetch the API Key from .env
 
@@ -113,8 +132,20 @@ function UploadContent() {
       const response = await axios.post('http://localhost:7300/generate-mcqs', { text: file });
 
       if (response.status === 200) {
+
         setMcqs(response.data.mcqs);
         toast({ title: 'MCQs generated successfully.', status: 'success', duration: 3000 });
+
+        const mcqs = response.data.mcqs;
+        console.log(mcqs,"mcqs")
+        if(mcqs.length>0){
+            // Set the generated MCQs in the state
+            setMcqs(mcqs);
+            // setShow(true)
+       
+        }
+      
+
       } else {
         setError('Failed to generate MCQs.');
       }
@@ -127,42 +158,39 @@ function UploadContent() {
   };
 
   return (
-    <Box w="60%" m="auto" p={6} bg="gray.100" borderRadius="md" boxShadow="md">
-      <Heading textAlign="center" mb={4}>
-        Upload Notes and Generate MCQs
-      </Heading>
-      <VStack spacing={4}>
-        <Input type="file" accept=".doc,.docx,.pdf,.txt,.jpg,.png" onChange={handleFileChange} />
-        {previewText && (
-          <Box p={4} bg="white" borderRadius="md" border="1px solid gray" w="full" maxH="200px" overflow="auto">
-            <Text fontSize="sm" color="gray.700">
-              {previewText}
-            </Text>
-          </Box>
-        )}
-        {isLoading ? (
-          <Spinner />
-        ) : (
-          <Button onClick={handleSubmit} colorScheme="blue" w="full">
-            Generate MCQs
-          </Button>
-        )}
-        {error && <Text color="red.500">{error}</Text>}
-      </VStack>
-      {mcqs.length > 0 && (
-        <Box mt={6}>
-          <Heading size="md">Generated MCQs:</Heading>
-          <VStack mt={4} spacing={3}>
-            {mcqs.map((mcq, index) => (
-              <Box key={index} p={4} bg="white" borderRadius="md" boxShadow="sm" w="full">
-                <Text fontWeight="bold">
-                  {index + 1}. {mcq.question}
-                </Text>
-              </Box>
-            ))}
-          </VStack>
-        </Box>
+
+    <Box h={"90vh"} w={"100vw"} bgImage={bgImg}  bgSize={"cover"}   bgRepeat="no-repeat" bgPosition="center" >
+     {/* Display the generated MCQs */}
+     {/* <DisplayMcq mcqs={mcqs} setShow={setShow} /> */}
+     <Heading p={"20px"} color={"white"} textAlign={"center"}  > Welcome to Examify , MCQ generator app</Heading> 
+
+     { (mcqs.length > 0 && show)? <DisplayMcq data={mcqs} setShow={setShow} setData={setMcqs} />:
+     
+    <Box textAlign={"center"} borderRadius={"10px"} w={"50%"}  m={"auto"} mt={"10px"} p={"10px"} bgColor={"whiteAlpha.800"} className="upload-notes-container">
+      <Heading mt={"10px"}>Upload Your Exam Notes (PDF Only)</Heading>
+
+ <Input type="file" border={"1px solid black"} w={"200px"} mt={"20px"} type="file" accept=".doc,.docx,.pdf,.txt,.jpg,.png" onChange={handleFileChange} />
+    
+
+      {previewText && (
+        <div className="file-preview">
+          <h4>Preview of the uploaded notes:</h4>
+          <p>{previewText}</p>
+        </div>
       )}
+
+   
+      <Button ml={"20px"} bgColor={"pink"} onClick={handleSubmit} disabled={isLoading}>
+        {isLoading ? 'Generating MCQs...' : 'Generate MCQs'}
+      </Button >
+
+     
+      {error && <Text className="error">{error}</Text>}
+
+     
+    </Box >} 
+
+
     </Box>
   );
 }

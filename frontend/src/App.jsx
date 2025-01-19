@@ -3,6 +3,8 @@ import { Box, Heading } from "@chakra-ui/react"
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import UploadContent from './Component/UploadContent'
+import AllRoutes from './Component/AllRoutes'
+import Navbar from './Component/Navbar'
 // import './App.css'
 
 function App() {
@@ -12,9 +14,9 @@ function App() {
     <>
     <Box>
       
-
-<Heading> Welcome to Examify , MCQ generator app</Heading> 
-    <UploadContent/>
+<Navbar/>
+<AllRoutes/>
+    {/* <UploadContent/> */}
     </Box>
     </>
   )
