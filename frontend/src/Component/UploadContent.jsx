@@ -63,6 +63,7 @@ function UploadContent() {
     setError('');
   
     try {
+      
       const response = await axios.post('http://localhost:7300/generate-mcqs', {
         text: file, // The extracted text from PDF
       });
@@ -81,7 +82,7 @@ function UploadContent() {
       setIsLoading(false);
       setError('An error occurred while generating MCQs.');
     }
-  };
+  } ;
   
 
 
