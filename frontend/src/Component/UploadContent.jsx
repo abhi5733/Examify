@@ -17,6 +17,8 @@ import {
 
 import DisplayMcq from './DisplayMcq';
 import bgImg from "../assets/bgImg.webp"
+import { useSelector } from 'react-redux';
+import LoginSignup from './LoginSignup';
 
 
 // Configure the worker
@@ -28,10 +30,9 @@ function UploadContent() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [mcqs, setMcqs] = useState([]);
-
   const toast = useToast();
-
-const[show,setShow] = useState(false) // to display mcq component
+  const[show,setShow] = useState(false) // to display mcq component
+  const Login = useSelector((store)=>store.login)
 
 useEffect(()=>{
 
@@ -164,10 +165,10 @@ console.log("show")
      {/* <DisplayMcq mcqs={mcqs} setShow={setShow} /> */}
      <Heading p={"20px"} color={"white"} textAlign={"center"}  > Welcome to Examify , MCQ generator app</Heading> 
 
-     { (mcqs.length > 0 && show)? <DisplayMcq data={mcqs} setShow={setShow} setData={setMcqs} />:
+     { (mcqs.length > 0 && show)? <DisplayMcq data={mcqs} setShow={setShow} setData={setMcqs} />:Login?<LoginSignup/>:
      
     <Box textAlign={"center"} borderRadius={"10px"} w={"50%"}  m={"auto"} mt={"10px"} p={"10px"} bgColor={"whiteAlpha.800"} className="upload-notes-container">
-      <Heading mt={"10px"}>Upload Your Exam Notes (PDF Only)</Heading>
+      <Heading fontSize={"20px"} mt={"10px"}>Upload Your Exam Notes ( Pdf , Jpg ,Png , Docs Only )</Heading>
 
  <Input type="file" border={"1px solid black"} w={"200px"} mt={"20px"}  accept=".doc,.docx,.pdf,.txt,.jpg,.png" onChange={handleFileChange} />
     
