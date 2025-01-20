@@ -49,7 +49,7 @@ return acc ;
 
 
   return (
-    <Box  m={"auto"} mt={"10px"} borderRadius={"10px"}   p={"10px"} bgColor={"whiteAlpha.800"} width={"50%"} >
+    <Box  m={"auto"} mt={"10px"} borderRadius={"10px"}   p={"10px"} bgColor={"whiteAlpha.800"}w={[ "90%","90%","50%","50%"]}  >
             {result?<Box >
                 <Heading fontSize={"lg"}>Results</Heading>
                 <Text mt={"10px"} fontSize={"lg"} >Your Score : {scores}</Text>
@@ -58,12 +58,12 @@ return acc ;
               <Heading mt={"10px"} fontSize={"lg"}>Generated MCQs:</Heading>
                 
                       <Text mt={"10px"}  key={index}>{data[index].question}</Text>
-                      <Flex onClick={handleAnswerClick} mt={"10px"}  >
-                        <Box  w={"50%"}  >
-                            <Text  w={"90%"} p={"2px 10px"} bgColor={data[index]?.myAnswer==data[index].options[0]?"blue":"white"} color={data[index]?.myAnswer==data[index].options[0]?"white":""}  borderRadius={"50px"} data-value={data[index].options[0]} >A : {data[index].options[0]}</Text>
+                      <Flex flexDirection={["column","column","row","row"]} onClick={handleAnswerClick} mt={"10px"}  >
+                        <Box  w={[ "100%","100%","50%","50%"]}  >
+                            <Text  w={"90%"} p={["2px 10px","2px 10px","2px 10px","2px 10px"]} bgColor={data[index]?.myAnswer==data[index].options[0]?"blue":"white"} color={data[index]?.myAnswer==data[index].options[0]?"white":""}  borderRadius={"50px"} data-value={data[index].options[0]} >A : {data[index].options[0]}</Text>
                             <Text w={"90%"}  p={"2px 10px"} mt={"20px"} bgColor={data[index]?.myAnswer==data[index].options[1]?"blue":"white"} color={data[index]?.myAnswer==data[index].options[1]?"white":""} borderRadius={"50px"} data-value={data[index].options[1]}>B : {data[index].options[1]}</Text>
                         </Box>
-                        <Box w={"50%"}  >
+                        <Box mt={["20px","20px","0px","0px"]} w={[ "100%","100%","50%","50%"]}  >
                         <Text  w={"90%"}   p={"2px 10px"} bgColor={data[index]?.myAnswer==data[index].options[2]?"blue":"white"} color={data[index]?.myAnswer==data[index].options[2]?"white":""} borderRadius={"50px"}  data-value={data[index].options[2]}>C : {data[index].options[2]}</Text>
                         <Text  w={"90%"}  p={"2px 10px"} mt={"20px"} bgColor={data[index]?.myAnswer==data[index].options[3]?"blue":"white"} color={data[index]?.myAnswer==data[index].options[3]?"white":""} borderRadius={"50px"} data-value={data[index].options[3]}>D : {data[index].options[3]}</Text>
                         </Box>

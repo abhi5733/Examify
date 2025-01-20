@@ -2,7 +2,7 @@ import { Loading, Login, StopLoading } from "./ActionType"
 
 const initialState={
     load : false ,
-    login : true ,
+    login : false ,
     token : ""
 }
 
