@@ -5,6 +5,7 @@ const { connection } = require('./db');
 const bodyParser = require('body-parser');
 require('dotenv').config();  // Ensure .env is loaded
 const { GoogleGenerativeAI } = require('@google/generative-ai');
+const userRouter = require('./routes/user.route');
 
 const app = express();
 
@@ -18,6 +19,8 @@ app.use(express.json()); // For parsing application/json
 
 // Middleware to parse JSON request bodies
 app.use(bodyParser.json());
+
+app.use("/user",userRouter)
 
 app.get('/', (req, res) => {
   res.send('Welcome to the MCQ Generation API');

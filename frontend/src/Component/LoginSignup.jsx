@@ -1,11 +1,15 @@
 import { Box, Button, FormControl, FormErrorMessage, FormLabel, Heading, Input, Text , Divider} from '@chakra-ui/react'
+import axios from 'axios'
 import React, { useState } from 'react'
+import { useDispatch } from 'react-redux'
+import { LoginFunction } from '../redux/Action'
 
 const LoginSignup = () => {
 
     const[toggle,setToggle] = useState(false)
 
     const[state,setState] = useState({})
+    const dispatch = useDispatch()
 
 // handle Form Change
 
@@ -18,13 +22,32 @@ setState(prev=>({...prev,[name]:value}))
 
 // handle User Submit
 
-    const handleUserSubmit = (e)=>{
+    const handleUserSubmit =  async (e)=>{
     e.preventDefault()
     console.log(state)
-    if(toggle){
+    if(!toggle){
+        console.log(1)
         // handle Sign up function
+try{
+      const user = await  axios.post("http://localhost:7300/user/register",state)
+   console.log(user,"user")
+   setState({})
+}catch(err){
+    console.log(err)
+}
+
     }else{
         //  handle login function
+
+        try{
+            const user = await  axios.post("http://localhost:7300/user/login",state)
+         console.log(user,"user")
+         dispatch(LoginFunction())
+         setState({})
+         
+      }catch(err){
+          console.log(err)
+      }
     }
 }
 
@@ -39,8 +62,8 @@ setState(prev=>({...prev,[name]:value}))
     <FormControl isRequired>
     <Heading fontSize={"xl"}>Login Form</Heading>
 
-    <FormLabel mt={5}>Name</FormLabel>
-    <Input border={"1px solid black"} type="text" name="name" onChange={handleChange} value={state.name} />
+    <FormLabel mt={5}>Email</FormLabel>
+    <Input border={"1px solid black"} type="email" name="email" onChange={handleChange} value={state.email} />
     
     <FormLabel mt={5}>Password</FormLabel>
     <Input border={"1px solid black"} type="Password" name="password" onChange={handleChange} value={state.password} />

@@ -2,7 +2,7 @@ const express = require("express")
 const jwt = require("jsonwebtoken")
 const bcrypt = require("bcrypt")
 const UserModel = require("../models/user.model")
-const auth = require("../middelwares/auth")
+// const auth = require("../middelwares/auth")
 require("dotenv").config()
 
 
@@ -10,27 +10,27 @@ require("dotenv").config()
 
 const userRouter = express.Router()
 
-userRouter.get("/",auth, async (req, res) => {
-    const { userID } = req.body
-    console.log(req.body)
+// userRouter.get("/",auth, async (req, res) => {
+//     const { userID } = req.body
+//     console.log(req.body)
     
-    try {
-         const singleuser = await UserModel.findById(userID)
-         if(singleuser){
-            res.status(200).send({msg:"single user exists",data:singleuser})
-         }
-         else{
-            res.status(404).send({msg:"user does not exists"})
-         }
-    } catch (error) {
-        res.status(404).send({msg:error})
-    }
-})
+//     try {
+//          const singleuser = await UserModel.findById(userID)
+//          if(singleuser){
+//             res.status(200).send({msg:"single user exists",data:singleuser})
+//          }
+//          else{
+//             res.status(404).send({msg:"user does not exists"})
+//          }
+//     } catch (error) {
+//         res.status(404).send({msg:error})
+//     }
+// })
 
 
 userRouter.post("/register", async (req, res) => {
-    const { name, phone_number, password, email } = req.body
-    console.log(name,email,password,phone_number)
+    const { name,  password, email } = req.body
+    console.log(name,email,password)
 
     try {
         bcrypt.hash(password, 5, async (err, hash) => {
@@ -41,9 +41,9 @@ userRouter.post("/register", async (req, res) => {
                 if (ExistingUser) {
                     res.send({ msg: "User Already Exist, Try Login" })
                 } else {
-                    const newD = new Date()
-                    const year = newD.getFullYear()
-                    let newUser = new UserModel({ name, email, phone_number, password: hash, year })
+                    // const newD = new Date()
+                    // const year = newD.getFullYear()
+                    let newUser = new UserModel({ name, email , password: hash })
                     await newUser.save();
                     res.send({ msg: "Account create succesfully", user: newUser })
                 }

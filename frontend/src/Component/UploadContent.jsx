@@ -166,7 +166,7 @@ console.log("show")
      {/* <DisplayMcq mcqs={mcqs} setShow={setShow} /> */}
      <Heading p={"20px"} color={"white"} fontSize={["15px","20px","30px","40px"]} textAlign={"center"}  > Welcome to Examify , MCQ generator app</Heading> 
 
-     { (mcqs.length > 0 && show)? <DisplayMcq data={mcqs} setShow={setShow} setData={setMcqs} />:Login?<LoginSignup/>:
+     { (mcqs.length > 0 && show)? <DisplayMcq data={mcqs} setShow={setShow} setData={setMcqs} />:!Login?<LoginSignup/>:
      
     <Box textAlign={"center"} borderRadius={"10px"} w={[ "90%","70%","50%","50%"]}  m={"auto"} mt={"10px"} p={"10px"} bgColor={"whiteAlpha.800"} className="upload-notes-container">
       <Heading fontSize={"20px"} mt={"10px"}>Upload Your Exam Notes ( Pdf , Jpg ,Png , Docs Only )</Heading>
