@@ -12,6 +12,7 @@ import {
   VStack,
   Spinner,
   useToast,
+  Flex,
 } from '@chakra-ui/react';
 
 
@@ -163,29 +164,34 @@ console.log("show")
     <Box h={"90vh"} w={"100vw"} bgImage={bgImg}  bgSize={"cover"}   bgRepeat="no-repeat" bgPosition="center" >
      {/* Display the generated MCQs */}
      {/* <DisplayMcq mcqs={mcqs} setShow={setShow} /> */}
-     <Heading p={"20px"} color={"white"} textAlign={"center"}  > Welcome to Examify , MCQ generator app</Heading> 
+     <Heading p={"20px"} color={"white"} fontSize={["15px","20px","30px","40px"]} textAlign={"center"}  > Welcome to Examify , MCQ generator app</Heading> 
 
      { (mcqs.length > 0 && show)? <DisplayMcq data={mcqs} setShow={setShow} setData={setMcqs} />:Login?<LoginSignup/>:
      
-    <Box textAlign={"center"} borderRadius={"10px"} w={"50%"}  m={"auto"} mt={"10px"} p={"10px"} bgColor={"whiteAlpha.800"} className="upload-notes-container">
+    <Box textAlign={"center"} borderRadius={"10px"} w={[ "90%","70%","50%","50%"]}  m={"auto"} mt={"10px"} p={"10px"} bgColor={"whiteAlpha.800"} className="upload-notes-container">
       <Heading fontSize={"20px"} mt={"10px"}>Upload Your Exam Notes ( Pdf , Jpg ,Png , Docs Only )</Heading>
 
- <Input type="file" border={"1px solid black"} w={"200px"} mt={"20px"}  accept=".doc,.docx,.pdf,.txt,.jpg,.png" onChange={handleFileChange} />
+ <Input  disabled={!!file} type="file" border={"1px solid black"} w={["51%","150px","200px","200px"]} mt={"20px"}  accept=".doc,.docx,.pdf,.txt,.jpg,.png" onChange={handleFileChange} />
     
 
       {previewText && (
-        <div className="file-preview">
+        <Box display={["none","none","block","block"]} className="file-preview">
           <h4>Preview of the uploaded notes:</h4>
           <p>{previewText}</p>
-        </div>
+        </Box>
       )}
 
+<Flex justifyContent={"center"}> 
    
-      <Button ml={"20px"} bgColor={"pink"} onClick={handleSubmit} disabled={isLoading}>
+      <Button ml={["","10px","20px","20px"]} mt={["10px","","",""]}  w={["50%","150px","200px","200px"]} bgColor={"pink"} onClick={handleSubmit} disabled={isLoading}>
         {isLoading ? 'Generating MCQs...' : 'Generate MCQs'}
       </Button >
 
-     
+      <Button display={file?"block":"none"} ml={["","10px","20px","20px"]} mt={["10px","","",""]}  w={["50%","150px","200px","200px"]} bgColor={"pink"} onClick={()=>(setFile(null),setPreviewText(""))} disabled={isLoading}>
+       Reset
+      </Button >
+</Flex>
+
       {error && <Text className="error">{error}</Text>}
 
      
