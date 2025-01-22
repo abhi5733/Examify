@@ -1,8 +1,9 @@
-import { Box, Button, FormControl, FormErrorMessage, FormLabel, Heading, Input, Text , Divider} from '@chakra-ui/react'
+import { Box, Button, FormControl, FormErrorMessage, FormLabel, Heading, Input, Text , Divider, useToast} from '@chakra-ui/react'
 import axios from 'axios'
 import React, { useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { LoginFunction } from '../redux/Action'
+import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
 
 const LoginSignup = () => {
 
@@ -11,10 +12,14 @@ const LoginSignup = () => {
     const[state,setState] = useState({})
     const dispatch = useDispatch()
 
+    const clientID = import.meta.env.VITE_ClientID
+
+    const toast = useToast()
 // handle Form Change
 
     const handleChange = (e)=>{
 
+    
 const {value,name} = e.target
 setState(prev=>({...prev,[name]:value}))
    
@@ -31,9 +36,23 @@ setState(prev=>({...prev,[name]:value}))
 try{
       const user = await  axios.post("http://localhost:7300/user/register",state)
    console.log(user,"user")
-   setState({})
+   toast({
+    description: "Sign Up successfull",
+    status: 'success',
+    position:"top",
+    duration: 2000,
+    isClosable: true,
+  })
+  setToggle((prev)=>!prev)
 }catch(err){
-    console.log(err)
+  console.log(err)
+  toast({
+    description: err.response.data.msg,
+    status: 'error',
+    position:"top",
+    duration: 2000,
+    isClosable: true,
+  })
 }
 
     }else{
@@ -42,10 +61,25 @@ try{
         try{
             const user = await  axios.post("http://localhost:7300/user/login",state)
          console.log(user,"user")
+         localStorage.setItem("tokens" , user.data.tokens)
          dispatch(LoginFunction())
          setState({})
+         toast({
+          description: user.data.msg,
+          status: 'success',
+          position:"top",
+          duration: 2000,
+          isClosable: true,
+        })
          
       }catch(err){
+        toast({
+          description: err.response.data.msg,
+          status: 'error',
+          position:"top",
+          duration: 2000,
+          isClosable: true,
+        })
           console.log(err)
       }
     }
@@ -77,6 +111,44 @@ try{
     >
      Login
     </Button>
+    <Divider my={4} borderColor="black"/>
+<Box mt={"10px"} border={"1px solid black"}  > 
+    <GoogleOAuthProvider clientId={clientID}>
+    <GoogleLogin
+      onSuccess={(credentialResponse) => {
+        // Send the token to your backend
+        const token = credentialResponse.credential;
+        axios
+        .post('http://localhost:7300/user/login', { token })
+        .then((response) => {
+          localStorage.setItem("tokens" , response.data.tokens)
+          dispatch(LoginFunction())
+          toast({
+            description: response.data.msg,
+            status: 'success',
+            position:"top",
+            duration: 2000,
+            isClosable: true,
+          })
+          console.log('User logged in:', response.data); // Handle successful login
+        })
+        .catch((error) => {
+          toast({
+            description: err.response.data.msg,
+            status: 'error',
+            position:"top",
+            duration: 2000,
+            isClosable: true,
+          })
+          console.error('Error during Google login:', error.response?.data || error.message); // Handle errors
+        });
+      }}
+      onError={() => {
+        console.log('Login Failed');
+      }}
+    />
+  </GoogleOAuthProvider>
+  </Box>
   </FormControl>
 </form>
 <Divider my={4} borderColor="black"/>

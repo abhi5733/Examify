@@ -14,6 +14,7 @@
     "@chakra-ui/react": "^2.10.3",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
+    "@react-oauth/google": "^0.12.1",
     "axios": "^1.7.9",
     "framer-motion": "^11.18.0",
     "mammoth": "^1.9.0",
