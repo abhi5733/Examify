@@ -2,7 +2,7 @@ import { Loading, Login, StopLoading } from "./ActionType"
 
 const initialState={
     load : false ,
-    login : false ,
+    login : localStorage.getItem("tokens") || false ,
     token : ""
 }
 

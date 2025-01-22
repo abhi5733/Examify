@@ -2,12 +2,13 @@ const express = require("express")
 const jwt = require("jsonwebtoken")
 const bcrypt = require("bcrypt")
 const UserModel = require("../models/user.model")
+const { OAuth2Client } = require('google-auth-library');
 // const auth = require("../middelwares/auth")
 require("dotenv").config()
 
 
 
-
+const client = new OAuth2Client(process.env.ClientID);
 const userRouter = express.Router()
 
 // userRouter.get("/",auth, async (req, res) => {
@@ -35,17 +36,17 @@ userRouter.post("/register", async (req, res) => {
     try {
         bcrypt.hash(password, 5, async (err, hash) => {
             if (err) {
-                res.send(`Registration Error: - ${err}`)
+                res.status(400).send({ msg: "Something Went Wrong" })
             } else {
                 let ExistingUser = await UserModel.findOne({ email: email })
                 if (ExistingUser) {
-                    res.send({ msg: "User Already Exist, Try Login" })
+                    res.status(400).send({ msg: "User Already Exist, Try Login" })
                 } else {
                     // const newD = new Date()
                     // const year = newD.getFullYear()
                     let newUser = new UserModel({ name, email , password: hash })
                     await newUser.save();
-                    res.send({ msg: "Account create succesfully", user: newUser })
+                    res.status(200).send({ msg: "Account create succesfully", user: newUser })
                 }
             }
         })
@@ -87,25 +88,85 @@ userRouter.post("/google-login", async (req, res) => {
 });
 
 userRouter.post("/login", async (req, res) => {
-    const { email, password } = req.body;
+    // console.log(req.body,"body")
+    const { email, password, token } = req.body; // Accept both email/password and Google token
+
     try {
-        const user = await UserModel.findOne({ email });
-        if (user) {
-            if (user.isGoogleUser) {
-                return res.status(400).send({ msg: "Google user detected. Use Google login instead." });
-            }
-            bcrypt.compare(password, user.password, (err, result) => {
-                if (result) {
-                    const token = jwt.sign({ userID: user._id }, "pandal");
-                    res.send({ msg: `Login success! Welcome back ${user.name}`, token, user });
-                } else {
-                    res.status(401).send({ msg: "Wrong password" });
-                }
+        
+        // Check if this is a Google login
+        if (token) {
+            // Verify the Google token
+       
+            const ticket = await client.verifyIdToken({
+                idToken: token,
+                audience: process.env.ClientID,
             });
+
+            const payload = ticket.getPayload();
+
+            console.log(payload,"payload")
+
+            const { email, name, picture } = payload;
+
+            // Check if the user exists in the database
+            let user = await UserModel.findOne({ email });
+
+            if (!user) {
+                // If user doesn't exist, create a new user with Google details
+                user = new UserModel({
+                    email,
+                    name,
+                    isGoogleUser: true,
+                });
+                await user.save();
+            } else if (!user.isGoogleUser) {
+                return res.status(400).send({
+                    msg: "This email is registered with a password. Use email/password login.",
+                });
+            }
+
+            // Generate and send JWT token
+            const tokens = jwt.sign({ userID: user._id }, "pandal");
+            return res.status(200).send({
+                msg: `Google login successful! Welcome, ${user.name}`,
+                tokens,
+                user,
+            });
+        }
+
+        // Normal login (email/password)
+        if (email && password) {
+            const user = await UserModel.findOne({ email });
+            if (user) {
+                if (user.isGoogleUser) {
+                    return res.status(400).send({
+                        msg: "Google user detected. Use Google login instead.",
+                    });
+                }
+                bcrypt.compare(password, user.password, (err, result) => {
+                    if (result) {
+                        const tokens = jwt.sign({ userID: user._id }, "pandal");
+                        res.status(200).send({
+                            msg: `Login success! Welcome back ${user.name}`,
+                            tokens,
+                            user,
+                        });
+                    } else {
+                        res.status(401).send({ msg: "Wrong password" });
+                    }
+                });
+            } else {
+                res.status(404).send({
+                    msg: `Email ${email} does not exist. Try registering.`,
+                });
+            }
         } else {
-            res.status(404).send({ msg: `Email ${email} does not exist. Try registering.` });
+            res.status(400).send({
+                msg: "Invalid request. Provide either googleToken or email/password.",
+            });
         }
     } catch (error) {
+        console.error(error);
         res.status(500).send({ msg: "Error during login", error });
     }
 });
