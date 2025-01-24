@@ -3,13 +3,15 @@ const mongoose = require("mongoose");
 const userSchema = mongoose.Schema({
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
-    phone_number: { type: String },
-    password: { type: String }, // Will be empty for Google login users
-    year: { type: String },
-    verifytoken: { type: String },
+    password: { type: String , required: true }, // Will be empty for Google login users
     createdAt: { type: Date, default: Date.now },
-    googleId: { type: String }, // Stores Google User ID for Google login users
     isGoogleUser: { type: Boolean, default: false }, // Identifies Google login users
+    results: [
+        [{
+          type: mongoose.Schema.Types.ObjectId, // References quiz IDs
+          ref: "quiz", // Refers to the 'quiz' collection
+        },],
+      ]
 });
 
 const UserModel = mongoose.model("user", userSchema);
