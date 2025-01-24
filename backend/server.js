@@ -6,7 +6,9 @@ const bodyParser = require('body-parser');
 require('dotenv').config();  // Ensure .env is loaded
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 const userRouter = require('./routes/user.route');
-
+const QuizModel = require('./models/quiz.model');
+const protectedRouter = require('./routes/protected.route');
+const auth = require("./middlewares/auth.js")
 const app = express();
 
 
@@ -21,11 +23,6 @@ app.use(express.json()); // For parsing application/json
 app.use(bodyParser.json());
 
 app.use("/user",userRouter)
-
-app.get('/', (req, res) => {
-  res.send('Welcome to the MCQ Generation API');
-});
-
 
 // POST endpoint to handle MCQ generation
 app.post('/generate-mcqs', async (req, res) => {
@@ -71,6 +68,13 @@ app.post('/generate-mcqs', async (req, res) => {
     res.status(500).json({ error: 'An error occurred while generating MCQs.' });
   }
 });
+
+
+app.use(auth)
+app.use("/protected",protectedRouter)
+
+
+
 
 
 // MongoDB connection and server start

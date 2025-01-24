@@ -10,10 +10,10 @@ const auth = async (req, res, next) => {
       req.body.userID = userID;
       next();
     } else {
-      res.send({ msg: "please login" });
+      res.status(400).send({ msg: "please login" });
     }
   } else {
-    res.send({ msg: "please login" });
+    res.status(400).send({ msg: "please login" });
   }
 };
 

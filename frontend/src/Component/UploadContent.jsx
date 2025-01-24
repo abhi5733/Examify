@@ -32,17 +32,17 @@ function UploadContent() {
   const [error, setError] = useState('');
   const [mcqs, setMcqs] = useState([]);
   const toast = useToast();
-  const[show,setShow] = useState(false) // to display mcq component
-  const Login = useSelector((store)=>store.login)
+  const [show, setShow] = useState(false) // to display mcq component
+  const Login = useSelector((store) => store.login)
 
-useEffect(()=>{
+  useEffect(() => {
 
-if(mcqs.length>0){
-setShow(true)
-console.log("show")
-}
+    if (mcqs?.length > 0) {
+      setShow(true)
+      console.log("show")
+    }
 
-},[mcqs])
+  }, [mcqs])
 
 
   const apiKey = import.meta.env.VITE_API_KEY; // Fetch the API Key from .env
@@ -67,6 +67,7 @@ console.log("show")
 
   // Handle file selection and extraction
   const handleFileChange = (e) => {
+
     const uploadedFile = e.target.files[0];
     const fileExtension = uploadedFile.name.split('.').pop().toLowerCase();
 
@@ -118,6 +119,7 @@ console.log("show")
     } else {
       setError('Unsupported file type. Please upload a PDF, Word document, text, or image file.');
     }
+
   };
 
   // Submit to generate MCQs
@@ -136,17 +138,19 @@ console.log("show")
       if (response.status === 200) {
 
         setMcqs(response.data.mcqs);
-        toast({ title: 'MCQs generated successfully.', status: 'success', duration: 3000 });
-
+        toast({ title: 'MCQs generated successfully.', status: 'success',  position: "top",
+          duration: 2000,
+          isClosable: true,});
+        console.log(response, "response")
         const mcqs = response.data.mcqs;
-        console.log(mcqs,"mcqs")
-        if(mcqs.length>0){
-            // Set the generated MCQs in the state
-            setMcqs(mcqs);
-            // setShow(true)
-       
+        console.log(mcqs, "mcqs")
+        if (mcqs?.length > 0) {
+          // Set the generated MCQs in the state
+          setMcqs(mcqs);
+          // setShow(true)
+
         }
-      
+
 
       } else {
         setError('Failed to generate MCQs.');
@@ -159,43 +163,50 @@ console.log("show")
     }
   };
 
+
+
+
   return (
 
-    <Box h={"90vh"} w={"100vw"} bgImage={bgImg}  bgSize={"cover"}   bgRepeat="no-repeat" bgPosition="center" >
-     {/* Display the generated MCQs */}
-     {/* <DisplayMcq mcqs={mcqs} setShow={setShow} /> */}
-     <Heading p={"20px"} color={"white"} fontSize={["15px","20px","30px","40px"]} textAlign={"center"}  > Welcome to Examify , MCQ generator app</Heading> 
+    <Box h={"90vh"} w={"100vw"} bgImage={bgImg} bgSize={"cover"} bgRepeat="no-repeat" bgPosition="center" >
+      {/* Display the generated MCQs */}
+      {/* <DisplayMcq mcqs={mcqs} setShow={setShow} /> */}
+      <Heading p={"20px"} color={"white"} fontSize={["15px", "20px", "30px", "40px"]} textAlign={"center"}  > Welcome to Examify , MCQ generator app</Heading>
 
-     { (mcqs.length > 0 && show)? <DisplayMcq data={mcqs} setShow={setShow} setData={setMcqs} />:!Login?<LoginSignup/>:
-     
-    <Box textAlign={"center"} borderRadius={"10px"} w={[ "90%","70%","50%","50%"]}  m={"auto"} mt={"10px"} p={"10px"} bgColor={"whiteAlpha.800"} className="upload-notes-container">
-      <Heading fontSize={"20px"} mt={"10px"}>Upload Your Exam Notes ( Pdf , Jpg ,Png , Docs Only )</Heading>
+      {(mcqs?.length > 0 && show) ? <DisplayMcq data={mcqs} setShow={setShow} setData={setMcqs} /> : !Login ? <LoginSignup /> :
 
- <Input  disabled={!!file} type="file" border={"1px solid black"} w={["51%","150px","200px","200px"]} mt={"20px"}  accept=".doc,.docx,.pdf,.txt,.jpg,.png" onChange={handleFileChange} />
-    
+        <Box textAlign={"center"} borderRadius={"10px"} w={["90%", "70%", "50%", "50%"]} m={"auto"}
+          mt={"10px"} p={"10px"} bgColor={"whiteAlpha.800"} className="upload-notes-container">
+          <Heading fontSize={"20px"} mt={"10px"}>Upload Your Exam Notes ( Pdf , Jpg ,Png , Docs Only )</Heading>
 
-      {previewText && (
-        <Box display={["none","none","block","block"]} className="file-preview">
-          <h4>Preview of the uploaded notes:</h4>
-          <p>{previewText}</p>
-        </Box>
-      )}
+          <Input disabled={!!file} type="file" border={"1px solid black"} w={["51%", "150px", "200px", "200px"]}
+            mt={"20px"} accept=".doc,.docx,.pdf,.txt,.jpg,.png" onChange={handleFileChange} />
 
-<Flex justifyContent={"center"}> 
-   
-      <Button ml={["","10px","20px","20px"]} mt={["10px","","",""]}  w={["50%","150px","200px","200px"]} bgColor={"pink"} onClick={handleSubmit} disabled={isLoading}>
-        {isLoading ? 'Generating MCQs...' : 'Generate MCQs'}
-      </Button >
 
-      <Button display={file?"block":"none"} ml={["","10px","20px","20px"]} mt={["10px","","",""]}  w={["50%","150px","200px","200px"]} bgColor={"pink"} onClick={()=>(setFile(null),setPreviewText(""))} disabled={isLoading}>
-       Reset
-      </Button >
-</Flex>
+          {previewText && (
+            <Box display={["none", "none", "block", "block"]} className="file-preview">
+              <h4>Preview of the uploaded notes:</h4>
+              <p>{previewText}</p>
+            </Box>
+          )}
 
-      {error && <Text className="error">{error}</Text>}
+          <Flex justifyContent={"center"}>
 
-     
-    </Box >} 
+            <Button ml={["", "10px", "20px", "20px"]} mt={["10px", "", "", ""]} w={["50%", "150px", "200px", "200px"]} bgColor={"pink"}
+              onClick={handleSubmit} disabled={isLoading}>
+              {isLoading ? 'Generating MCQs...' : 'Generate MCQs'}
+            </Button >
+
+            <Button display={file ? "block" : "none"} ml={["", "10px", "20px", "20px"]} mt={["10px", "", "", ""]}
+              w={["50%", "150px", "200px", "200px"]} bgColor={"pink"} onClick={() => (setFile(null), setPreviewText(""))} disabled={isLoading}>
+              Reset
+            </Button >
+          </Flex>
+
+          {error && <Text className="error">{error}</Text>}
+
+
+        </Box >}
 
 
     </Box>
