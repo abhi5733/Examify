@@ -2,7 +2,7 @@ import { Box, Button, FormControl, FormErrorMessage, FormLabel, Heading, Input, 
 import axios from 'axios'
 import React, { useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { LoginFunction } from '../redux/Action'
+import { LoginFunction } from '../redux/action'
 import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
 
 const LoginSignup = () => {
