@@ -1,4 +1,4 @@
-import { Loading, Login, StopLoading } from "./ActionType"
+import { Loading, Login, StopLoading } from "./actiontype"
 
 
 
