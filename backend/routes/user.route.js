@@ -12,22 +12,6 @@ require("dotenv").config()
 const client = new OAuth2Client(process.env.ClientID);
 const userRouter = express.Router()
 
-// userRouter.get("/",auth, async (req, res) => {
-//     const { userID } = req.body
-//     console.log(req.body)
-    
-//     try {
-//          const singleuser = await UserModel.findById(userID)
-//          if(singleuser){
-//             res.status(200).send({msg:"single user exists",data:singleuser})
-//          }
-//          else{
-//             res.status(404).send({msg:"user does not exists"})
-//          }
-//     } catch (error) {
-//         res.status(404).send({msg:error})
-//     }
-// })
 
 
 userRouter.post("/register", async (req, res) => {

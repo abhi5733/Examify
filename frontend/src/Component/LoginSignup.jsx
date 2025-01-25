@@ -134,7 +134,7 @@ const LoginSignup = () => {
                       })
                       .catch((error) => {
                         toast({
-                          description: err.response.data.msg,
+                          description: error.response.data.msg,
                           status: 'error',
                           position: "top",
                           duration: 2000,

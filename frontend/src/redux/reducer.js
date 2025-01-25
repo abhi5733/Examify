@@ -1,9 +1,11 @@
 import { Loading, Login, StopLoading } from "./ActionType"
 
 const initialState={
+
     load : false ,
     login : localStorage.getItem("tokens") || false ,
-    token : ""
+    token : localStorage.getItem("tokens") || null ,
+
 }
 
 
@@ -18,7 +20,7 @@ export const reducer = (state=initialState,{type})=>{
         return {...state,load:false}
 
     case Login :
-        return {...state,load:false,login:true}
+        return {...state,load:false,login:true,token : localStorage.getItem("tokens")}
 
     default :
         return state

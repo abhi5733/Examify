@@ -40,6 +40,43 @@ protectedRouter.post("/saveMcq", async (req,res)=>{
         res.status(400).send({"msg":"Something went wrong", err})
     }
   })
+
+
+
+  protectedRouter.get("/", async (req, res) => {
+    const { userID } = req.body
+
+    try {
+        // Fetch the user first
+    const user = await UserModel.findById(userID).lean();
+
+    if (!user) {
+      return res.status(404).send({ msg: "User not found" });
+    }
+
+    if ( !user?.results || user?.results?.length==0) {
+      res.status(200).send(user) ;
+    }
+
+    // Populate each nested array of quiz IDs
+    const populatedResults = await Promise.all(
+      user.results.map(async (quizArray) => {
+        return Promise.all(
+          quizArray.map(async (quizId) => {
+            return await QuizModel.findById(quizId).lean();
+          })
+        );
+      })
+    );
+
+    // Add the populated results back to the user object
+    user.results = populatedResults;
+    res.status(200).send(user)
+    } catch (error) {
+        res.status(404).send({msg:error})
+    }
+})
+
   
 
 
