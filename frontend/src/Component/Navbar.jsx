@@ -16,9 +16,7 @@ const[menu,setMenu] = useState(false)
     <Box h={"10vh"} bgColor={"gray.100"} p={"5px"}  >
      <Flex h={"100%"} justifyContent={"space-between"} alignItems={"center"} > <Link to="/">  <Image h={"100px"} w={"200px"} src={logo} alt='Logo' />  </Link>
       {token && <GiHamburgerMenu onClick={()=>{setMenu((prev)=>!prev)}} style={{fontSize:"30px",marginRight:"10px"}} />} </Flex> 
-  {/* {menu && <Box bgColor={"whiteAlpha.900"} pos={"absolute"}top={"0px"} right={"0px"} border={"1px solid black"} h={"500px"} w={"500px"} >
-<Heading>Hamburger Menu</Heading>
-  </Box> } */}
+ 
   {menu && (
         <motion.div
         onClick={()=>setMenu(false)}
