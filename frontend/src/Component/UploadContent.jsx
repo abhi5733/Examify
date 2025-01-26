@@ -23,8 +23,8 @@ import LoginSignup from './LoginSignup';
 
 
 // Configure the worker
-GlobalWorkerOptions.workerSrc = `/node_modules/pdfjs-dist/build/pdf.worker.mjs`;
-
+GlobalWorkerOptions.workerSrc = "./pdf.worker.mjs";
+// /node_modules/pdfjs-dist/build/pdf.worker.mjs
 function UploadContent() {
   const [file, setFile] = useState(null);
   const [previewText, setPreviewText] = useState('');
