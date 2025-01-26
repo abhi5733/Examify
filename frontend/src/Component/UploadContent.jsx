@@ -133,7 +133,7 @@ function UploadContent() {
     setError('');
 
     try {
-      const response = await axios.post('http://localhost:7300/generate-mcqs', { text: file });
+      const response = await axios.post(`${import.meta.env.VITE_URL}/generate-mcqs`, { text: file });
 
       if (response.status === 200) {
 

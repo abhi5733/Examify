@@ -16,7 +16,7 @@ const MyInfo = () => {
       const  getData =  async ()=>{
 try{
 
-   const data =  await axios.get("http://localhost:7300/protected",  {
+   const data =  await axios.get(`${import.meta.env.VITE_URL}/protected`,  {
         headers: {
           Authorization: localStorage.getItem("tokens"),
         },

@@ -46,7 +46,7 @@ const DisplayMcq = ({ data, setShow, setData }) => {
   const saveMcq = async () => {
 
     try {
-      const response = await axios.post("http://localhost:7300/protected/saveMcq", data, // The request body
+      const response = await axios.post(`${import.meta.env.VITE_URL}/protected/saveMcq`, data, // The request body
         {
           headers: {
             Authorization: localStorage.getItem("tokens"),

@@ -34,7 +34,7 @@ const LoginSignup = () => {
       console.log(1)
       // handle Sign up function
       try {
-        const user = await axios.post("http://localhost:7300/user/register", state)
+        const user = await axios.post(`${import.meta.env.VITE_URL}/user/register`, state)
         console.log(user, "user")
         toast({
           description: "Sign Up successfull",
@@ -59,7 +59,7 @@ const LoginSignup = () => {
       //  handle login function
 
       try {
-        const user = await axios.post("http://localhost:7300/user/login", state)
+        const user = await axios.post(`${import.meta.env.VITE_URL}/user/login`, state)
         console.log(user, "user")
         localStorage.setItem("tokens", user.data.tokens)
         dispatch(LoginFunction())
@@ -119,7 +119,7 @@ const LoginSignup = () => {
                     // Send the token to your backend
                     const token = credentialResponse.credential;
                     axios
-                      .post('http://localhost:7300/user/login', { token })
+                      .post(`${import.meta.env.VITE_URL}/user/login`, { token })
                       .then((response) => {
                         localStorage.setItem("tokens", response.data.tokens)
                         dispatch(LoginFunction())
