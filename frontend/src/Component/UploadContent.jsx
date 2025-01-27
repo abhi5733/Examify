@@ -23,7 +23,10 @@ import LoginSignup from './LoginSignup';
 
 
 // Configure the worker
-GlobalWorkerOptions.workerSrc = "./pdf.worker.mjs";
+GlobalWorkerOptions.workerSrc =  "/node_modules/pdfjs-dist/build/pdf.worker.mjs"
+
+// "./assets/pdf.worker.mjs"
+//  'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
 // /node_modules/pdfjs-dist/build/pdf.worker.mjs
 function UploadContent() {
   const [file, setFile] = useState(null);
